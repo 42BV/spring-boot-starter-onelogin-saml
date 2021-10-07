@@ -1,11 +1,11 @@
 package nl._42.boot.onelogin.saml.user;
 
 import lombok.extern.slf4j.Slf4j;
+import nl._42.boot.onelogin.saml.Saml2Exception;
 import nl._42.boot.onelogin.saml.Saml2Properties;
 import nl._42.boot.onelogin.saml.Saml2Response;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -51,7 +51,7 @@ public class Saml2UserService {
         String userName = response.getValue("username").orElseGet(response::getName);
 
         if (StringUtils.isBlank(userName)) {
-            throw new AccessDeniedException(
+            throw new Saml2Exception(
                 "Missing user name in SAML response, please provide a Name ID or user attribute"
             );
         }

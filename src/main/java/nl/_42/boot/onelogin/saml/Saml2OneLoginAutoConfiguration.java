@@ -95,7 +95,8 @@ public class Saml2OneLoginAutoConfiguration {
             return new Saml2AuthenticationProvider(oneLoginSaml2UserService());
         }
 
-        private Saml2UserService oneLoginSaml2UserService() {
+        @Bean
+        public Saml2UserService oneLoginSaml2UserService() {
             return new Saml2UserService(properties);
         }
 

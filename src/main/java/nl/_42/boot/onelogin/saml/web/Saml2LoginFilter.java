@@ -24,14 +24,14 @@ public class Saml2LoginFilter extends AbstractSaml2Filter {
     }
 
     @Override
-    protected void doFilter(Auth auth, Registration idp, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, SettingsException {
+    protected void doFilter(Auth auth, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, SettingsException {
         String successUrl = request.getParameter("successUrl");
         if (StringUtils.isNotBlank(successUrl)) {
             HttpSession session = request.getSession();
             session.setAttribute(Saml2SuccessRedirectHandler.SUCCESS_URL_PARAMETER, successUrl);
         }
 
-        auth.login(returnTo, idp.isForceAuthN(), false, true);
+        auth.login(returnTo, registration.isForceAuthN(), false, true);
     }
 
 }

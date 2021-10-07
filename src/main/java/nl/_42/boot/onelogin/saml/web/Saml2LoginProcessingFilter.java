@@ -39,7 +39,7 @@ public class Saml2LoginProcessingFilter extends AbstractSaml2Filter {
     }
 
     @Override
-    protected void doFilter(Auth auth, Registration idp, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException, SAMLException {
+    protected void doFilter(Auth auth, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException, SAMLException {
         try {
             auth.processResponse();
         } catch (Exception e) {
@@ -47,14 +47,14 @@ public class Saml2LoginProcessingFilter extends AbstractSaml2Filter {
         }
 
         if (auth.isAuthenticated()) {
-            handleSuccess(auth, request, response);
+            handleSuccess(auth, registration, request, response);
         } else {
             handleFailure(auth, request, response);
         }
     }
 
-    private void handleSuccess(Auth auth, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Authentication authentication = authenticationProvider.authenticate(auth);
+    private void handleSuccess(Auth auth, Registration registration, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        Authentication authentication = authenticationProvider.authenticate(auth, registration);
         log.info("Login '{}' successful", authentication.getName());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

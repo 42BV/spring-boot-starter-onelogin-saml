@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.security.access.AccessDeniedException;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -60,7 +59,7 @@ public class Saml2Properties {
     public Registration getIdp(String name) {
         Registration idp = registrations.get(name);
         if (idp == null) {
-            throw new AccessDeniedException("Unknown Identity Provider " + name);
+            throw new Saml2Exception("Unknown Identity Provider " + name);
         }
         return idp;
     }
@@ -106,9 +105,6 @@ public class Saml2Properties {
     }
 
     private X509Certificate getCertificate(String content) throws CertificateException {
-
-
-
         if (StringUtils.isBlank(content)) {
             return null;
         }

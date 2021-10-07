@@ -22,7 +22,7 @@ public class Saml2LogoutFilter extends AbstractSaml2Filter {
     }
 
     @Override
-    protected void doFilter(Auth auth, Registration idp, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, SAMLException {
+    protected void doFilter(Auth auth, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, SAMLException {
         auth.logout(returnTo);
     }
 

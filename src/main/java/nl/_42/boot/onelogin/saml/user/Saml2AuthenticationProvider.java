@@ -2,6 +2,7 @@ package nl._42.boot.onelogin.saml.user;
 
 import com.onelogin.saml2.Auth;
 import lombok.AllArgsConstructor;
+import nl._42.boot.onelogin.saml.Registration;
 import nl._42.boot.onelogin.saml.Saml2Response;
 import org.joda.time.DateTime;
 import org.springframework.security.core.Authentication;
@@ -15,8 +16,8 @@ public class Saml2AuthenticationProvider {
 
     private final Saml2UserService userService;
 
-    public Authentication authenticate(Auth auth) throws AuthenticationException {
-        Saml2Response response = new Saml2Response(auth);
+    public Authentication authenticate(Auth auth, Registration registration) throws AuthenticationException {
+        Saml2Response response = new Saml2Response(auth, registration);
         UserDetails details = userService.load(response);
         LocalDateTime expiration = convert(auth.getSessionExpiration());
 

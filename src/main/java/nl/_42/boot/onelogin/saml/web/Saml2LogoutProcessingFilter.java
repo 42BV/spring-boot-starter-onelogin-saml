@@ -22,7 +22,7 @@ public class Saml2LogoutProcessingFilter extends AbstractSaml2Filter {
     }
 
     @Override
-    protected void doFilter(Auth auth, Registration idp, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException {
+    protected void doFilter(Auth auth, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException {
         SecurityContextHolder.clearContext();
         log.info("Logout successful");
 

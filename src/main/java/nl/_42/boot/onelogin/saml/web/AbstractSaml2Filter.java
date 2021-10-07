@@ -31,10 +31,10 @@ public abstract class AbstractSaml2Filter extends GenericFilterBean {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
         try {
-            Registration idp = getIdp(httpServletRequest);
-            Saml2Settings settings = properties.build(idp);
+            Registration registration = getIdp(httpServletRequest);
+            Saml2Settings settings = properties.build(registration);
             Auth auth = new Auth(settings, httpServletRequest, httpServletResponse);
-            doFilter(auth, idp, httpServletRequest, httpServletResponse, chain);
+            doFilter(auth, registration, httpServletRequest, httpServletResponse, chain);
         } catch (SAMLException | CertificateException se) {
             httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             log.error("Could perform authentication due to an unexpected error", se);
@@ -47,7 +47,7 @@ public abstract class AbstractSaml2Filter extends GenericFilterBean {
         return properties.getIdp(name);
     }
 
-    protected abstract void doFilter(Auth auth, Registration idp, HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    protected abstract void doFilter(Auth auth, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain)
         throws IOException, ServletException, SAMLException;
 
 }

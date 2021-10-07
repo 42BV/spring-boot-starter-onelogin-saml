@@ -15,6 +15,7 @@ import java.util.Set;
 public class Saml2Response {
 
     private final Auth auth;
+    private final Registration registration;
 
     public String getName() {
         return auth.getNameId();
@@ -30,7 +31,8 @@ public class Saml2Response {
             return Collections.emptySet();
         }
 
-        Collection<String> attribute = auth.getAttribute(name);
+        String mapped = registration.getAttribute(name).orElse(name);
+        Collection<String> attribute = auth.getAttribute(mapped);
         if (attribute == null) {
             return Collections.emptySet();
         }
@@ -38,8 +40,8 @@ public class Saml2Response {
         return new HashSet<>(attribute);
     }
 
-    public Optional<String> getValue(String attribute) {
-        return getValues(attribute)
+    public Optional<String> getValue(String name) {
+        return getValues(name)
             .stream()
             .sorted()
             .filter(StringUtils::isNotBlank)
