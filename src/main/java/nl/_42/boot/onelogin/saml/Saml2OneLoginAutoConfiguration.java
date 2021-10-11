@@ -66,7 +66,7 @@ public class Saml2OneLoginAutoConfiguration {
         }
 
         private Saml2LoginFilter oneLoginSaml2LoginFilter() {
-            return new Saml2LoginFilter(properties, SSO_URL);
+            return new Saml2LoginFilter(properties);
         }
 
         private Saml2LoginProcessingFilter oneLoginSaml2LoginProcessingFilter() {
@@ -79,7 +79,7 @@ public class Saml2OneLoginAutoConfiguration {
         }
 
         private Saml2LogoutFilter oneLoginSaml2LogoutFilter() {
-            return new Saml2LogoutFilter(properties, SLO_URL);
+            return new Saml2LogoutFilter(properties);
         }
 
         private Saml2LogoutProcessingFilter oneLoginSaml2LogoutProcessingFilter() {

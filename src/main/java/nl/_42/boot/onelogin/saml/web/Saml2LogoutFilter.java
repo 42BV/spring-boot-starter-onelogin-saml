@@ -14,15 +14,18 @@ import java.io.IOException;
 @Slf4j
 public class Saml2LogoutFilter extends AbstractSaml2Filter {
 
-    private final String returnTo;
+    private final Saml2Properties properties;
 
-    public Saml2LogoutFilter(Saml2Properties properties, String returnTo) {
+    public Saml2LogoutFilter(Saml2Properties properties) {
         super(properties);
-        this.returnTo = returnTo;
+        this.properties = properties;
     }
 
     @Override
     protected void doFilter(Auth auth, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, SAMLException {
+        String registrationId = getRegistrationId(request);
+        String returnTo = properties.getBaseUrl() + "/saml2/SingleLogout/" + registrationId;
+
         auth.logout(returnTo);
     }
 
