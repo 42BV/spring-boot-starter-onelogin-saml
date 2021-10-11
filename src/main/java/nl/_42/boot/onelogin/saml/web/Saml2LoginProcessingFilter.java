@@ -8,6 +8,7 @@ import nl._42.boot.onelogin.saml.Saml2Properties;
 import nl._42.boot.onelogin.saml.user.Saml2AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -47,21 +48,27 @@ public class Saml2LoginProcessingFilter extends AbstractSaml2Filter {
         }
 
         if (auth.isAuthenticated()) {
-            handleSuccess(auth, registration, request, response);
+            onAuthenticated(auth, registration, request, response);
         } else {
-            handleFailure(auth, request, response);
+            onFailure(auth, request, response);
         }
     }
 
-    private void handleSuccess(Auth auth, Registration registration, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Authentication authentication = authenticationProvider.authenticate(auth, registration);
-        log.info("Login '{}' successful", authentication.getName());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    private void onAuthenticated(Auth auth, Registration registration, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        try {
+            Authentication authentication = authenticationProvider.authenticate(auth, registration);
 
-        successHandler.onAuthenticationSuccess(request, response, authentication);
+            log.info("Login '{}' successful", authentication.getName());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            successHandler.onAuthenticationSuccess(request, response, authentication);
+        } catch (AuthenticationException exception) {
+            log.error("An error has occurred during authentication", exception);
+            failureHandler.onAuthenticationFailure(request, response, exception);
+        }
     }
 
-    private void handleFailure(Auth auth, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    private void onFailure(Auth auth, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String message = String.format("Could not authenticate: (%s) %s", auth.getLastErrorReason(), String.join(", ", auth.getErrors()));
         failureHandler.onAuthenticationFailure(request, response, new AuthenticationServiceException(message));
     }

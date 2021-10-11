@@ -33,8 +33,8 @@ public class Saml2Properties {
     private boolean enabled;
 
     private String baseUrl;
-    private String successUrl;
-    private String failureUrl;
+    private String successUrl = "/";
+    private String failureUrl = "/error";
 
     /**
      * Session timeout.
