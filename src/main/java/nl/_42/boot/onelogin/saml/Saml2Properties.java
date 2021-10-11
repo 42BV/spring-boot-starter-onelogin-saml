@@ -52,16 +52,16 @@ public class Saml2Properties {
     private Map<String, Registration> registrations = new HashMap<>();
 
     /**
-     * Retrieve the Identity Provider properties.
-     * @param name the name of the provider
+     * Retrieve the registration.
+     * @param registrationId the registration ID
      * @return the properties
      */
-    public Registration getIdp(String name) {
-        Registration idp = registrations.get(name);
-        if (idp == null) {
-            throw new Saml2Exception("Unknown Identity Provider " + name);
+    public Registration getRegistration(String registrationId) {
+        Registration registration = registrations.get(registrationId);
+        if (registration == null) {
+            throw new Saml2Exception("Unknown Registration " + registrationId);
         }
-        return idp;
+        return registration;
     }
 
     /**

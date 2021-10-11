@@ -31,7 +31,8 @@ public abstract class AbstractSaml2Filter extends GenericFilterBean {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
         try {
-            Registration registration = getIdp(httpServletRequest);
+            String registrationId = getRegistrationId(httpServletRequest);
+            Registration registration = properties.getRegistration(registrationId);
             Saml2Settings settings = properties.build(registration);
             Auth auth = new Auth(settings, httpServletRequest, httpServletResponse);
             doFilter(auth, registration, httpServletRequest, httpServletResponse, chain);
@@ -41,10 +42,9 @@ public abstract class AbstractSaml2Filter extends GenericFilterBean {
         }
     }
 
-    private Registration getIdp(HttpServletRequest request) {
+    protected String getRegistrationId(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        String name = StringUtils.substringAfterLast(uri, "/");
-        return properties.getIdp(name);
+        return StringUtils.substringAfterLast(uri, "/");
     }
 
     protected abstract void doFilter(Auth auth, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain)

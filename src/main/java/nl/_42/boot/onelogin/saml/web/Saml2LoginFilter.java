@@ -16,11 +16,11 @@ import java.io.IOException;
 @Slf4j
 public class Saml2LoginFilter extends AbstractSaml2Filter {
 
-    private final String returnTo;
+    private final Saml2Properties properties;
 
-    public Saml2LoginFilter(Saml2Properties properties, String returnTo) {
+    public Saml2LoginFilter(Saml2Properties properties) {
         super(properties);
-        this.returnTo = returnTo;
+        this.properties = properties;
     }
 
     @Override
@@ -31,6 +31,8 @@ public class Saml2LoginFilter extends AbstractSaml2Filter {
             session.setAttribute(Saml2SuccessRedirectHandler.SUCCESS_URL_PARAMETER, successUrl);
         }
 
+        String registrationId = getRegistrationId(request);
+        String returnTo = properties.getBaseUrl() + "/saml2/SSO/" + registrationId;
         auth.login(returnTo, registration.isForceAuthN(), false, true);
     }
 
