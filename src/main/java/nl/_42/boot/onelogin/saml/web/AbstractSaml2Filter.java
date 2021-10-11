@@ -33,7 +33,7 @@ public abstract class AbstractSaml2Filter extends GenericFilterBean {
         try {
             String registrationId = getRegistrationId(httpServletRequest);
             Registration registration = properties.getRegistration(registrationId);
-            Saml2Settings settings = properties.build(registration);
+            Saml2Settings settings = properties.getSettings(registrationId, registration);
             Auth auth = new Auth(settings, httpServletRequest, httpServletResponse);
             doFilter(auth, registration, httpServletRequest, httpServletResponse, chain);
         } catch (SAMLException | CertificateException se) {

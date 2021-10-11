@@ -66,17 +66,18 @@ public class Saml2Properties {
 
     /**
      * Build the SAML2 settings for a registration.
+     * @param registrationId the registration ID
      * @param registration the registration properties
      * @return the settings, must exist in config
      */
-    public Saml2Settings build(Registration registration) throws CertificateException {
+    public Saml2Settings getSettings(String registrationId, Registration registration) throws CertificateException {
         SettingsBuilder builder = new SettingsBuilder();
         Map<String, Object> values = new HashMap<>();
 
         // Service provider properties
         values.put(SettingsBuilder.SP_ENTITYID_PROPERTY_KEY, registration.getServiceProviderId());
-        values.put(SettingsBuilder.SP_ASSERTION_CONSUMER_SERVICE_URL_PROPERTY_KEY, baseUrl + "/SSO");
-        values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY, baseUrl + "/SingleLogout");
+        values.put(SettingsBuilder.SP_ASSERTION_CONSUMER_SERVICE_URL_PROPERTY_KEY, getUrl("/saml2/SSO/", registrationId));
+        values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY, getUrl("/saml2/SingleLogout/", registrationId));
 
         // Identity provider properties
         values.put(SettingsBuilder.IDP_ENTITYID_PROPERTY_KEY, registration.getIdentityProviderId());
@@ -94,6 +95,10 @@ public class Saml2Properties {
         Saml2Settings settings = builder.build();
         settings.setSPValidationOnly(!registration.isValidate());
         return settings;
+    }
+
+    private String getUrl(String path, String registrationId) {
+        return baseUrl + path + registrationId;
     }
 
     private Properties build(Properties properties) {
