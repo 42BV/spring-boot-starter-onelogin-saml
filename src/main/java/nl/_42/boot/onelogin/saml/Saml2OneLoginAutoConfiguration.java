@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl._42.boot.onelogin.saml.user.Saml2AuthenticationProvider;
 import nl._42.boot.onelogin.saml.user.Saml2UserService;
+import nl._42.boot.onelogin.saml.web.Saml2ConfigFilter;
 import nl._42.boot.onelogin.saml.web.Saml2FailureHandler;
 import nl._42.boot.onelogin.saml.web.Saml2Filter;
 import nl._42.boot.onelogin.saml.web.Saml2LoginFilter;
@@ -30,6 +31,7 @@ import java.util.Optional;
 @ComponentScan(basePackageClasses = Saml2Properties.class)
 public class Saml2OneLoginAutoConfiguration {
 
+    static final String CONFIG_URL     = "/saml2/config";
     static final String LOGIN_URL      = "/saml2/login/**";
     static final String LOGOUT_URL     = "/saml2/logout/**";
     static final String SSO_URL        = "/saml2/SSO/**";
@@ -57,37 +59,22 @@ public class Saml2OneLoginAutoConfiguration {
         @Bean
         public Saml2Filter saml2Filter() {
             Saml2Filter chain = new Saml2Filter();
-            chain.on(LOGIN_URL, oneLoginSaml2LoginFilter());
-            chain.on(LOGOUT_URL, oneLoginSaml2LogoutFilter());
-            chain.on(SSO_URL, oneLoginSaml2LoginProcessingFilter());
-            chain.on(SLO_URL, oneLoginSaml2LogoutProcessingFilter());
-            chain.on(METADATA_URL, oneLoginSaml2MetadataDisplayFilter());
+            chain.on(CONFIG_URL, new Saml2ConfigFilter(properties));
+            chain.on(LOGIN_URL, new Saml2LoginFilter(properties));
+            chain.on(LOGOUT_URL, new Saml2LogoutFilter(properties));
+            chain.on(SSO_URL, saml2LoginProcessingFilter());
+            chain.on(SLO_URL, new Saml2LogoutProcessingFilter(properties));
+            chain.on(METADATA_URL, new Saml2MetadataDisplayFilter(properties));
             return chain;
         }
 
-        private Saml2LoginFilter oneLoginSaml2LoginFilter() {
-            return new Saml2LoginFilter(properties);
-        }
-
-        private Saml2LoginProcessingFilter oneLoginSaml2LoginProcessingFilter() {
+        private Saml2LoginProcessingFilter saml2LoginProcessingFilter() {
             return new Saml2LoginProcessingFilter(
                 properties,
                 oneLoginSaml2AuthenticationProvider(),
                 oneLoginSaml2SuccessRedirectHandler(),
                 oneLoginSaml2FailureHandler()
             );
-        }
-
-        private Saml2LogoutFilter oneLoginSaml2LogoutFilter() {
-            return new Saml2LogoutFilter(properties);
-        }
-
-        private Saml2LogoutProcessingFilter oneLoginSaml2LogoutProcessingFilter() {
-            return new Saml2LogoutProcessingFilter(properties);
-        }
-
-        private Saml2MetadataDisplayFilter oneLoginSaml2MetadataDisplayFilter() {
-            return new Saml2MetadataDisplayFilter(properties);
         }
 
         @Bean
