@@ -1,13 +1,16 @@
 onelogin:
   saml:
     enabled: true
+    base_url: https://myservice
     registrations:
       saml-service:
-        entity_id: https://saml-service/sso
-        force_auth_n: true
+        service_provider_id: https://myservice/saml2/login/saml-service
+        service_provider_certificate: '${onelogin.saml.registrations.saml-service.certificate}'
+        identity_provider_id: https://saml-service/sso
+        sign_on_url: https://saml-service/sso
         logout_url: https://unit-test/logout
         metadata_url: https://saml-service/metadata
-        verification_certificate: "
+        certificate: '
           -----BEGIN CERTIFICATE-----
           MIIDXTCCAkWgAwIBAgIJALmVVuDWu4NYMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV
           BAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBX
@@ -29,7 +32,7 @@ onelogin:
           99CJ25RkAcSobWNF5zD0O6lgOo3cEdB/ksCq3hmtlC/DlLZ/D8CJ+7VuZnS1rR2n
           aQ==
           -----END CERTIFICATE-----
-        "
+        '
     properties:
       organization:
         name: SP Java

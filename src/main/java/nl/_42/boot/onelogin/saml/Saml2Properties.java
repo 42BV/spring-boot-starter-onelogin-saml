@@ -76,17 +76,18 @@ public class Saml2Properties {
 
         // Service provider properties
         values.put(SettingsBuilder.SP_ENTITYID_PROPERTY_KEY, registration.getServiceProviderId());
+        values.put(SettingsBuilder.SP_X509CERT_PROPERTY_KEY, getCertificate(registration.getServiceProviderCertificate()));
         values.put(SettingsBuilder.SP_ASSERTION_CONSUMER_SERVICE_URL_PROPERTY_KEY, getUrl("/saml2/SSO/", registrationId));
         values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY, getUrl("/saml2/SingleLogout/", registrationId));
 
         // Identity provider properties
         values.put(SettingsBuilder.IDP_ENTITYID_PROPERTY_KEY, registration.getIdentityProviderId());
+        values.put(SettingsBuilder.IDP_X509CERT_PROPERTY_KEY, getCertificate(registration.getCertificate()));
+        values.put(SettingsBuilder.IDP_SINGLE_SIGN_ON_SERVICE_URL_PROPERTY_KEY, registration.getSignOnUrl());
         values.put(SettingsBuilder.IDP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY, registration.getLogoutUrl());
         values.put(SettingsBuilder.IDP_SINGLE_LOGOUT_SERVICE_BINDING_PROPERTY_KEY, "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect");
-        values.put(SettingsBuilder.IDP_SINGLE_SIGN_ON_SERVICE_URL_PROPERTY_KEY, registration.getSignOnUrl());
-        values.put(SettingsBuilder.IDP_X509CERT_PROPERTY_KEY, getCertificate(registration.getCertificate()));
 
-        values.put(SettingsBuilder.SECURITY_SIGNATURE_ALGORITHM, "http://www.w3.org/2000/09/xmldsig#rsa-sha1");
+        values.put(SettingsBuilder.SECURITY_SIGNATURE_ALGORITHM, registration.getSignatureAlgorithm());
 
         builder.fromProperties(build(properties));
         builder.fromProperties(build(registration.getProperties()));
