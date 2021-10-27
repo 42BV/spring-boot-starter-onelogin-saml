@@ -1,6 +1,6 @@
 package nl._42.boot.onelogin.saml.web;
 
-import com.onelogin.saml2.Auth;
+import com.onelogin.saml2.settings.Saml2Settings;
 import lombok.extern.slf4j.Slf4j;
 import nl._42.boot.onelogin.saml.Registration;
 import nl._42.boot.onelogin.saml.Saml2Properties;
@@ -22,7 +22,7 @@ public class Saml2LogoutProcessingFilter extends AbstractSaml2Filter {
     }
 
     @Override
-    protected void doFilter(Auth auth, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException {
+    protected void doFilter(Saml2Settings settings, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException {
         SecurityContextHolder.clearContext();
         log.info("Logout successful");
 

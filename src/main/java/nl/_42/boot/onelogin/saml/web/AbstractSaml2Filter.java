@@ -1,6 +1,5 @@
 package nl._42.boot.onelogin.saml.web;
 
-import com.onelogin.saml2.Auth;
 import com.onelogin.saml2.exception.SAMLException;
 import com.onelogin.saml2.settings.Saml2Settings;
 import lombok.AllArgsConstructor;
@@ -34,8 +33,8 @@ public abstract class AbstractSaml2Filter extends GenericFilterBean {
             String registrationId = getRegistrationId(httpServletRequest);
             Registration registration = properties.getRegistration(registrationId);
             Saml2Settings settings = properties.getSettings(registrationId, registration);
-            Auth auth = new Auth(settings, httpServletRequest, httpServletResponse);
-            doFilter(auth, registration, httpServletRequest, httpServletResponse, chain);
+
+            doFilter(settings, registration, httpServletRequest, httpServletResponse, chain);
         } catch (SAMLException | CertificateException se) {
             httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             log.error("Could perform authentication due to an unexpected error", se);
@@ -47,7 +46,7 @@ public abstract class AbstractSaml2Filter extends GenericFilterBean {
         return StringUtils.substringAfterLast(uri, "/");
     }
 
-    protected abstract void doFilter(Auth auth, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    protected abstract void doFilter(Saml2Settings settings, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain)
         throws IOException, ServletException, SAMLException;
 
 }
