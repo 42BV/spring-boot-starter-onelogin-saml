@@ -14,12 +14,17 @@ import java.util.Properties;
 public class Registration {
 
     /**
-     * Service Provider identifier
+     * Service Provider (SP) identifier
      */
     private String serviceProviderId;
 
     /**
-     * Identity Provider identifier
+     * Service Provider certificate
+     */
+    private String serviceProviderCertificate;
+
+    /**
+     * Identity Provider (IDP) identifier
      */
     private String identityProviderId;
 
@@ -39,27 +44,32 @@ public class Registration {
     private String logoutUrl;
 
     /**
-     * IDP certificate, used for verification.
+     * IDP certificate
      */
     private String certificate;
 
     /**
-     * Force new authentication upon login.
+     * Security signature algorithm
+     */
+    private String signatureAlgorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
+
+    /**
+     * Force new authentication upon login
      */
     private boolean forceAuthN;
 
     /**
-     * Enforces validation.
+     * Enforces validation
      */
     private boolean validate = true;
 
     /**
-     * Custom properties that are set.
+     * Custom properties that are set
      */
     private Properties properties = new Properties();
 
     /**
-     * Attribute name translations.
+     * Attribute name translations
      */
     private Map<String, String> attributes = new HashMap<>();
 
