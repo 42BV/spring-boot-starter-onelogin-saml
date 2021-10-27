@@ -19,8 +19,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.web.authentication.RememberMeServices;
 
+import javax.servlet.Filter;
 import java.util.Optional;
 
 /**
@@ -32,11 +34,11 @@ import java.util.Optional;
 public class Saml2OneLoginAutoConfiguration {
 
     static final String CONFIG_URL     = "/saml2/config";
+    static final String METADATA_URL   = "/saml2/metadata/**";
     static final String LOGIN_URL      = "/saml2/login/**";
     static final String LOGOUT_URL     = "/saml2/logout/**";
     static final String SSO_URL        = "/saml2/SSO/**";
     static final String SLO_URL        = "/saml2/SingleLogout/**";
-    static final String METADATA_URL   = "/saml2/metadata/**";
 
     @Bean("oneLoginSaml2Properties")
     public Saml2Properties oneLoginSaml2Properties() {
@@ -60,11 +62,16 @@ public class Saml2OneLoginAutoConfiguration {
         public Saml2Filter saml2Filter() {
             Saml2Filter chain = new Saml2Filter();
             chain.on(CONFIG_URL, new Saml2ConfigFilter(properties));
-            chain.on(LOGIN_URL, new Saml2LoginFilter(properties));
-            chain.on(LOGOUT_URL, new Saml2LogoutFilter(properties));
-            chain.on(SSO_URL, saml2LoginProcessingFilter());
-            chain.on(SLO_URL, new Saml2LogoutProcessingFilter(properties));
             chain.on(METADATA_URL, new Saml2MetadataDisplayFilter(properties));
+
+            // Redirect to IDP login page and handle SSO
+            Filter loginFilter = chain.on(LOGIN_URL, new Saml2LoginFilter(properties));
+            chain.on(SSO_URL, HttpMethod.POST, saml2LoginProcessingFilter());
+            chain.on(SSO_URL, loginFilter);
+
+            // Redirect to IDP logout page and handle SLO
+            chain.on(LOGOUT_URL, new Saml2LogoutFilter(properties));
+            chain.on(SLO_URL, new Saml2LogoutProcessingFilter(properties));
             return chain;
         }
 
