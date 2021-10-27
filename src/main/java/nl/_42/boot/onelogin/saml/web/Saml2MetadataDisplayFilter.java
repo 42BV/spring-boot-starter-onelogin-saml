@@ -1,7 +1,7 @@
 package nl._42.boot.onelogin.saml.web;
 
-import com.onelogin.saml2.Auth;
 import com.onelogin.saml2.exception.SAMLException;
+import com.onelogin.saml2.settings.Saml2Settings;
 import nl._42.boot.onelogin.saml.Registration;
 import nl._42.boot.onelogin.saml.Saml2Properties;
 import org.apache.commons.lang3.StringUtils;
@@ -47,12 +47,12 @@ public class Saml2MetadataDisplayFilter extends AbstractSaml2Filter {
     }
 
     @Override
-    protected void doFilter(Auth auth, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws SAMLException, IOException {
+    protected void doFilter(Saml2Settings settings, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws SAMLException, IOException {
         String fileName = getMetadataFileName(registration.getServiceProviderId());
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
 
         try {
-            String metadata = auth.getSettings().getSPMetadata();
+            String metadata = settings.getSPMetadata();
             response.getWriter().append(metadata);
         } catch (CertificateEncodingException e) {
             throw new SAMLException("Could not retrieve metadata", e);
