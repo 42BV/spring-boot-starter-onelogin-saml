@@ -1,9 +1,11 @@
 package nl._42.boot.onelogin.saml.web;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.Filter;
@@ -19,13 +21,21 @@ import java.util.List;
 @Slf4j
 public class Saml2Filter extends GenericFilterBean {
 
-    private static final String WILDCARD = "/**";
-
     private final List<SecurityFilterChain> filters = new ArrayList<>();
 
-    public void on(String url, Filter filter) {
-        AntPathRequestMatcher matcher = new AntPathRequestMatcher(url + WILDCARD);
+    public Filter on(String url, Filter filter) {
+        AntPathRequestMatcher matcher = new AntPathRequestMatcher(url);
+        return on(matcher, filter);
+    }
+
+    public Filter on(String url, HttpMethod method, Filter filter) {
+        AntPathRequestMatcher matcher = new AntPathRequestMatcher(url, method.name());
+        return on(matcher, filter);
+    }
+
+    public Filter on(RequestMatcher matcher, Filter filter) {
         filters.add(new DefaultSecurityFilterChain(matcher, filter));
+        return filter;
     }
 
     @Override
