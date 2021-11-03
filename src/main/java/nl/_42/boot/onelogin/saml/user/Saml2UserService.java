@@ -1,10 +1,8 @@
 package nl._42.boot.onelogin.saml.user;
 
 import lombok.extern.slf4j.Slf4j;
-import nl._42.boot.onelogin.saml.Saml2Exception;
 import nl._42.boot.onelogin.saml.Saml2Properties;
 import nl._42.boot.onelogin.saml.Saml2Response;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,22 +39,10 @@ public class Saml2UserService {
     private UserDetails build(Saml2Response response) {
         log.debug("Loading user by SAML credentials...");
 
-        String userName = getUserName(response);
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        String userName = response.getUserName();
+        Collection<GrantedAuthority> authorities = response.getAuthorities();
 
         return new User(userName, "", authorities);
-    }
-
-    private String getUserName(Saml2Response response) {
-        String userName = response.getValue("username").orElseGet(response::getName);
-
-        if (StringUtils.isBlank(userName)) {
-            throw new Saml2Exception(
-                "Missing user name in SAML response, please provide a Name ID or user attribute"
-            );
-        }
-
-        return userName;
     }
 
     private UserDetails decorate(UserDetails details, Saml2Response response) {
