@@ -84,8 +84,9 @@ public class Saml2Properties {
         values.put(SettingsBuilder.IDP_ENTITYID_PROPERTY_KEY, registration.getIdentityProviderId());
         values.put(SettingsBuilder.IDP_X509CERT_PROPERTY_KEY, getCertificate(registration.getCertificate()));
         values.put(SettingsBuilder.IDP_SINGLE_SIGN_ON_SERVICE_URL_PROPERTY_KEY, registration.getSignOnUrl());
+        values.put(SettingsBuilder.IDP_SINGLE_SIGN_ON_SERVICE_BINDING_PROPERTY_KEY, registration.getSignOnBinding());
         values.put(SettingsBuilder.IDP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY, registration.getLogoutUrl());
-        values.put(SettingsBuilder.IDP_SINGLE_LOGOUT_SERVICE_BINDING_PROPERTY_KEY, "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect");
+        values.put(SettingsBuilder.IDP_SINGLE_LOGOUT_SERVICE_BINDING_PROPERTY_KEY, registration.getLogoutBinding());
 
         values.put(SettingsBuilder.SECURITY_SIGNATURE_ALGORITHM, registration.getSignatureAlgorithm());
 
