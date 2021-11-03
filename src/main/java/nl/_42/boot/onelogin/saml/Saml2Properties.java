@@ -78,15 +78,15 @@ public class Saml2Properties {
         values.put(SettingsBuilder.SP_ENTITYID_PROPERTY_KEY, registration.getServiceProviderId());
         values.put(SettingsBuilder.SP_X509CERT_PROPERTY_KEY, getCertificate(registration.getServiceProviderCertificate()));
         values.put(SettingsBuilder.SP_ASSERTION_CONSUMER_SERVICE_URL_PROPERTY_KEY, getUrl("/saml2/SSO/", registrationId));
+        values.put(SettingsBuilder.SP_ASSERTION_CONSUMER_SERVICE_BINDING_PROPERTY_KEY, registration.getSignOnBinding());
         values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY, getUrl("/saml2/SingleLogout/", registrationId));
+        values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_BINDING_PROPERTY_KEY, registration.getLogoutBinding());
 
         // Identity provider properties
         values.put(SettingsBuilder.IDP_ENTITYID_PROPERTY_KEY, registration.getIdentityProviderId());
         values.put(SettingsBuilder.IDP_X509CERT_PROPERTY_KEY, getCertificate(registration.getCertificate()));
         values.put(SettingsBuilder.IDP_SINGLE_SIGN_ON_SERVICE_URL_PROPERTY_KEY, registration.getSignOnUrl());
-        values.put(SettingsBuilder.IDP_SINGLE_SIGN_ON_SERVICE_BINDING_PROPERTY_KEY, registration.getSignOnBinding());
         values.put(SettingsBuilder.IDP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY, registration.getLogoutUrl());
-        values.put(SettingsBuilder.IDP_SINGLE_LOGOUT_SERVICE_BINDING_PROPERTY_KEY, registration.getLogoutBinding());
 
         values.put(SettingsBuilder.SECURITY_SIGNATURE_ALGORITHM, registration.getSignatureAlgorithm());
 
