@@ -39,9 +39,19 @@ public class Registration {
     private String signOnUrl;
 
     /**
+     * Single Sign On binding
+     */
+    private String signOnBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
+
+    /**
      * Single Log Out URL
      */
     private String logoutUrl;
+
+    /**
+     * Single Log Out binding
+     */
+    private String logoutBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect";
 
     /**
      * IDP certificate
