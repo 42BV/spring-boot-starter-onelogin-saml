@@ -84,6 +84,11 @@ public class Registration {
     private Map<String, String> attributes = new HashMap<>();
 
     /**
+     * Role name translations
+     */
+    private Map<String, String> roles = new HashMap<>();
+
+    /**
      * Retrieve the translated attribute.
      * @param name the name
      * @return the translated value
@@ -91,6 +96,19 @@ public class Registration {
     public Optional<String> getAttribute(String name) {
         String result = attributes.get(name);
         return Optional.ofNullable(result).filter(StringUtils::isNotBlank);
+    }
+
+    /**
+     * Retrieve the translated role.
+     * @param role the role
+     * @return the translated role
+     */
+    public String getRole(String role) {
+        if (StringUtils.isBlank(role)) {
+            return null;
+        }
+
+        return roles.getOrDefault(role, role);
     }
 
 }
