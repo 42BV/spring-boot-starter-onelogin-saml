@@ -99,16 +99,16 @@ public class Registration {
     }
 
     /**
-     * Retrieve the translated role.
+     * Retrieve the authority of a role.
      * @param role the role
-     * @return the translated role
+     * @return the authority
      */
-    public String getRole(String role) {
+    public String getAuthority(String role) {
         if (StringUtils.isBlank(role)) {
             return null;
         }
 
-        return roles.getOrDefault(role, role);
+        return roles.get(role);
     }
 
 }

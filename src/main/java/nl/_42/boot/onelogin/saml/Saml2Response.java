@@ -78,7 +78,7 @@ public class Saml2Response {
         Set<String> roles = getValues(ROLE);
 
         return roles.stream()
-            .map(registration::getRole)
+            .map(registration::getAuthority)
             .filter(StringUtils::isNotBlank)
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
