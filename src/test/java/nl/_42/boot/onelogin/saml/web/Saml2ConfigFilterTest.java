@@ -23,7 +23,7 @@ public class Saml2ConfigFilterTest extends AbstractSpringBootTest {
         filter.doFilter(null, response, null);
 
         Assertions.assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
-        Assertions.assertEquals("{\"registrationIds\": [\"saml-service\"]}", response.getContentAsString());
+        Assertions.assertEquals("{\"registrations\":[{\"id\":\"saml-service\",\"enabled\":true,\"logout\":false}]}", response.getContentAsString());
     }
 
 }

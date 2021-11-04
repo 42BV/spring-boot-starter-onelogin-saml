@@ -8,7 +8,6 @@ onelogin:
         service_provider_certificate: '${onelogin.saml.registrations.saml-service.certificate}'
         identity_provider_id: https://saml-service/sso
         sign_on_url: https://saml-service/sso
-        logout_url: https://unit-test/logout
         metadata_url: https://saml-service/metadata
         certificate: '
           -----BEGIN CERTIFICATE-----
