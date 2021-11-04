@@ -1,6 +1,7 @@
 package nl._42.boot.onelogin.saml.web;
 
 import com.onelogin.saml2.Auth;
+import com.onelogin.saml2.authn.AuthnRequestParams;
 import com.onelogin.saml2.exception.SettingsException;
 import com.onelogin.saml2.settings.Saml2Settings;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+
+import static nl._42.boot.onelogin.saml.web.Saml2SuccessRedirectHandler.SUCCESS_URL_PARAMETER;
 
 @Slf4j
 public class Saml2LoginFilter extends AbstractSaml2Filter {
@@ -28,15 +31,15 @@ public class Saml2LoginFilter extends AbstractSaml2Filter {
     protected void doFilter(Saml2Settings settings, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, SettingsException {
         Auth auth = new Auth(settings, request, response);
 
-        String successUrl = request.getParameter("successUrl");
+        String successUrl = request.getParameter(SUCCESS_URL_PARAMETER);
         if (StringUtils.isNotBlank(successUrl)) {
             HttpSession session = request.getSession();
-            session.setAttribute(Saml2SuccessRedirectHandler.SUCCESS_URL_PARAMETER, successUrl);
+            session.setAttribute(SUCCESS_URL_PARAMETER, successUrl);
         }
 
         String registrationId = getRegistrationId(request);
-        String returnTo = properties.getBaseUrl() + "/saml2/SSO/" + registrationId;
-        auth.login(returnTo, registration.isForceAuthN(), false, true);
+        String returnTo = properties.getSignOnUrl(registrationId);
+        auth.login(returnTo, new AuthnRequestParams(registration.isForceAuthN(), false, true));
     }
 
 }

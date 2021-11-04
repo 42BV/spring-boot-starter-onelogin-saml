@@ -77,9 +77,9 @@ public class Saml2Properties {
         // Service provider properties
         values.put(SettingsBuilder.SP_ENTITYID_PROPERTY_KEY, registration.getServiceProviderId());
         values.put(SettingsBuilder.SP_X509CERT_PROPERTY_KEY, getCertificate(registration.getServiceProviderCertificate()));
-        values.put(SettingsBuilder.SP_ASSERTION_CONSUMER_SERVICE_URL_PROPERTY_KEY, getUrl("/saml2/SSO/", registrationId));
+        values.put(SettingsBuilder.SP_ASSERTION_CONSUMER_SERVICE_URL_PROPERTY_KEY, getSignOnUrl(registrationId));
         values.put(SettingsBuilder.SP_ASSERTION_CONSUMER_SERVICE_BINDING_PROPERTY_KEY, registration.getSignOnBinding());
-        values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY, getUrl("/saml2/SingleLogout/", registrationId));
+        values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY, getLogoutUrl(registrationId));
         values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_BINDING_PROPERTY_KEY, registration.getLogoutBinding());
 
         // Identity provider properties
@@ -97,6 +97,14 @@ public class Saml2Properties {
         Saml2Settings settings = builder.build();
         settings.setSPValidationOnly(!registration.isValidate());
         return settings;
+    }
+
+    public String getSignOnUrl(String registrationId) {
+        return getUrl("/saml2/SSO/", registrationId);
+    }
+
+    public String getLogoutUrl(String registrationId) {
+        return getUrl("/saml2/SingleLogout/", registrationId);
     }
 
     private String getUrl(String path, String registrationId) {
