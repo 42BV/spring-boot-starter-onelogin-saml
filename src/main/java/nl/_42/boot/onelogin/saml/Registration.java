@@ -13,6 +13,9 @@ import java.util.Properties;
 @Setter
 public class Registration {
 
+    public static final String POST     = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
+    public static final String REDIRECT = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect";
+
     /**
      * Service Provider (SP) identifier
      */
@@ -41,7 +44,7 @@ public class Registration {
     /**
      * Single Sign On binding
      */
-    private String signOnBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
+    private String signOnBinding = POST;
 
     /**
      * Single Log Out URL
@@ -51,7 +54,7 @@ public class Registration {
     /**
      * Single Log Out binding
      */
-    private String logoutBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect";
+    private String logoutBinding = POST;
 
     /**
      * IDP certificate
