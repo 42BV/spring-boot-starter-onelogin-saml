@@ -33,9 +33,7 @@ public class Saml2LogoutFilter extends AbstractSaml2Filter {
             String redirectTo = StringUtils.defaultString(registration.getLogoutUrl(), properties.getSuccessUrl());
             response.sendRedirect(redirectTo);
         } else {
-            String registrationId = getRegistrationId(request);
-            String returnTo = properties.getLogoutUrl(registrationId);
-
+            String returnTo = properties.getLogoutUrl(registration);
             Auth auth = new Auth(settings, request, response);
             auth.logout(returnTo);
         }
