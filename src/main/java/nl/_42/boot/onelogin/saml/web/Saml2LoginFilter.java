@@ -37,8 +37,7 @@ public class Saml2LoginFilter extends AbstractSaml2Filter {
             session.setAttribute(SUCCESS_URL_PARAMETER, successUrl);
         }
 
-        String registrationId = getRegistrationId(request);
-        String returnTo = properties.getSignOnUrl(registrationId);
+        String returnTo = properties.getSignOnUrl(registration);
         auth.login(returnTo, new AuthnRequestParams(registration.isForceAuthN(), false, true));
     }
 

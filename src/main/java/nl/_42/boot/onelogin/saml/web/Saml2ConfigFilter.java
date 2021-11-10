@@ -31,7 +31,7 @@ public class Saml2ConfigFilter extends GenericFilterBean {
 
     @Override
     public final void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException {
-        List<Config> registrations = properties.getRegistrations().entrySet().stream().map(e -> build(e.getKey(), e.getValue())).collect(Collectors.toList());
+        List<Config> registrations = properties.getRegistrations().values().stream().map(this::build).collect(Collectors.toList());
 
         Map<String, Object> body = new HashMap<>();
         body.put("registrations", registrations);
@@ -40,9 +40,9 @@ public class Saml2ConfigFilter extends GenericFilterBean {
         response.getWriter().append(objectMapper.writeValueAsString(body));
     }
 
-    private Config build(String registrationId, Registration registration) {
+    private Config build(Registration registration) {
         return new Config(
-            registrationId,
+            registration.getId(),
             StringUtils.isNotBlank(registration.getSignOnUrl()),
             StringUtils.isNotBlank(registration.getLogoutUrl())
         );

@@ -30,9 +30,8 @@ public abstract class AbstractSaml2Filter extends GenericFilterBean {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
         try {
-            String registrationId = getRegistrationId(httpServletRequest);
-            Registration registration = properties.getRegistration(registrationId);
-            Saml2Settings settings = properties.getSettings(registrationId, registration);
+            Registration registration = getRegistration(httpServletRequest);
+            Saml2Settings settings = properties.getSettings(registration);
 
             doFilter(settings, registration, httpServletRequest, httpServletResponse, chain);
         } catch (SAMLException | CertificateException se) {
@@ -41,9 +40,10 @@ public abstract class AbstractSaml2Filter extends GenericFilterBean {
         }
     }
 
-    protected String getRegistrationId(HttpServletRequest request) {
+    private Registration getRegistration(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        return StringUtils.substringAfterLast(uri, "/");
+        String registrationId = StringUtils.substringAfterLast(uri, "/");
+        return properties.getRegistration(registrationId);
     }
 
     protected abstract void doFilter(Saml2Settings settings, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain)

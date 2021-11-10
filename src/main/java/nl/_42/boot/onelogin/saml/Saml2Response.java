@@ -84,4 +84,12 @@ public class Saml2Response {
             .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieve the registration identifier (IDP).
+     * @return the registration identifier
+     */
+    public String getRegistrationId() {
+        return registration.getId();
+    }
+
 }

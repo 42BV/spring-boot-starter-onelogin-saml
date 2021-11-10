@@ -17,6 +17,11 @@ public class Registration {
     public static final String REDIRECT = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect";
 
     /**
+     * Registration identifier
+     */
+    private String id;
+
+    /**
      * Service Provider (SP) identifier
      */
     private String serviceProviderId;

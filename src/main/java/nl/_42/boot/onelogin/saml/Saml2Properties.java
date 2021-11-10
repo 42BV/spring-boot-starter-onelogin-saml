@@ -9,6 +9,7 @@ import com.onelogin.saml2.util.Util;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.security.cert.CertificateException;
@@ -26,7 +27,7 @@ import java.util.Properties;
 @Data
 @Slf4j
 @ConfigurationProperties(prefix = "onelogin.saml")
-public class Saml2Properties {
+public class Saml2Properties implements InitializingBean {
 
     private static final String PROPERTY_PREFIX = "onelogin.saml2.";
 
@@ -66,20 +67,19 @@ public class Saml2Properties {
 
     /**
      * Build the SAML2 settings for a registration.
-     * @param registrationId the registration ID
      * @param registration the registration properties
      * @return the settings, must exist in config
      */
-    public Saml2Settings getSettings(String registrationId, Registration registration) throws CertificateException {
+    public Saml2Settings getSettings(Registration registration) throws CertificateException {
         SettingsBuilder builder = new SettingsBuilder();
         Map<String, Object> values = new HashMap<>();
 
         // Service provider properties
         values.put(SettingsBuilder.SP_ENTITYID_PROPERTY_KEY, registration.getServiceProviderId());
         values.put(SettingsBuilder.SP_X509CERT_PROPERTY_KEY, getCertificate(registration.getServiceProviderCertificate()));
-        values.put(SettingsBuilder.SP_ASSERTION_CONSUMER_SERVICE_URL_PROPERTY_KEY, getSignOnUrl(registrationId));
+        values.put(SettingsBuilder.SP_ASSERTION_CONSUMER_SERVICE_URL_PROPERTY_KEY, getSignOnUrl(registration));
         values.put(SettingsBuilder.SP_ASSERTION_CONSUMER_SERVICE_BINDING_PROPERTY_KEY, registration.getSignOnBinding());
-        values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY, getLogoutUrl(registrationId));
+        values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY, getLogoutUrl(registration));
         values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_BINDING_PROPERTY_KEY, registration.getLogoutBinding());
 
         // Identity provider properties
@@ -99,16 +99,16 @@ public class Saml2Properties {
         return settings;
     }
 
-    public String getSignOnUrl(String registrationId) {
-        return getUrl("/saml2/SSO/", registrationId);
+    public String getSignOnUrl(Registration registration) {
+        return getUrl("/saml2/SSO/", registration);
     }
 
-    public String getLogoutUrl(String registrationId) {
-        return getUrl("/saml2/SingleLogout/", registrationId);
+    public String getLogoutUrl(Registration registration) {
+        return getUrl("/saml2/SingleLogout/", registration);
     }
 
-    private String getUrl(String path, String registrationId) {
-        return baseUrl + path + registrationId;
+    private String getUrl(String path, Registration registration) {
+        return baseUrl + path + registration.getId();
     }
 
     private Properties build(Properties properties) {
@@ -125,6 +125,11 @@ public class Saml2Properties {
         }
 
         return Util.loadCert(content);
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        registrations.forEach((id, registration) -> registration.setId(id));
     }
 
 }
