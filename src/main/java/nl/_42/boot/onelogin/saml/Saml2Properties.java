@@ -34,6 +34,10 @@ public class Saml2Properties implements InitializingBean {
     private boolean enabled;
 
     private String baseUrl;
+
+    private String defaultLoginUrl;
+    private boolean defaultLoginSkipRedirect;
+
     private String successUrl = "/";
     private String failureUrl = "/error";
 
@@ -79,7 +83,7 @@ public class Saml2Properties implements InitializingBean {
         values.put(SettingsBuilder.SP_X509CERT_PROPERTY_KEY, getCertificate(registration.getServiceProviderCertificate()));
         values.put(SettingsBuilder.SP_ASSERTION_CONSUMER_SERVICE_URL_PROPERTY_KEY, getSignOnUrl(registration));
         values.put(SettingsBuilder.SP_ASSERTION_CONSUMER_SERVICE_BINDING_PROPERTY_KEY, registration.getSignOnBinding());
-        values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY, getLogoutUrl(registration));
+        values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_URL_PROPERTY_KEY, getSingleLogoutUrl(registration));
         values.put(SettingsBuilder.SP_SINGLE_LOGOUT_SERVICE_BINDING_PROPERTY_KEY, registration.getLogoutBinding());
 
         // Identity provider properties
@@ -100,15 +104,19 @@ public class Saml2Properties implements InitializingBean {
     }
 
     public String getSignOnUrl(Registration registration) {
-        return getUrl("/saml2/SSO/", registration);
+        return getUrl("SSO", registration);
+    }
+
+    public String getSingleLogoutUrl(Registration registration) {
+        return getUrl("SingleLogout", registration);
     }
 
     public String getLogoutUrl(Registration registration) {
-        return getUrl("/saml2/SingleLogout/", registration);
+        return getUrl("logout", registration);
     }
 
     private String getUrl(String path, Registration registration) {
-        return baseUrl + path + registration.getId();
+        return String.format("%s/saml2/%s/%s", baseUrl, path, registration.getId());
     }
 
     private Properties build(Properties properties) {

@@ -17,6 +17,11 @@ public class Registration {
     public static final String REDIRECT = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect";
 
     /**
+     * Registration enabled
+     */
+    private boolean enabled = true;
+
+    /**
      * Registration identifier
      */
     private String id;
@@ -80,6 +85,11 @@ public class Registration {
      * Enforces validation
      */
     private boolean validate = true;
+
+    /**
+     * Debug attributes on login.
+     */
+    private boolean debug;
 
     /**
      * Custom properties that are set

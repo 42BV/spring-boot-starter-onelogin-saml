@@ -12,8 +12,9 @@ public class Saml2Authentication extends UsernamePasswordAuthenticationToken imp
 
     private final Saml2Response response;
     private final LocalDateTime expiration;
+    private final String logoutUrl;
 
-    public Saml2Authentication(UserDetails details, Saml2Response response, LocalDateTime expiration) {
+    public Saml2Authentication(UserDetails details, Saml2Response response, LocalDateTime expiration, String logoutUrl) {
         super(
             details,
             details.getPassword(),
@@ -22,6 +23,7 @@ public class Saml2Authentication extends UsernamePasswordAuthenticationToken imp
 
         this.response = response;
         this.expiration = expiration;
+        this.logoutUrl = logoutUrl;
     }
 
 }

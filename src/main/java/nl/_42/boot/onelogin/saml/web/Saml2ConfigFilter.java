@@ -22,22 +22,30 @@ import java.util.stream.Collectors;
 @Slf4j
 public class Saml2ConfigFilter extends GenericFilterBean {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
     private final Saml2Properties properties;
+    private final Saml2LoginUrlResolver urlResolver;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public Saml2ConfigFilter(Saml2Properties properties) {
         this.properties = properties;
+        this.urlResolver = new Saml2LoginUrlResolver(properties);
     }
 
     @Override
     public final void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException {
-        List<Config> registrations = properties.getRegistrations().values().stream().map(this::build).collect(Collectors.toList());
-
         Map<String, Object> body = new HashMap<>();
-        body.put("registrations", registrations);
+        body.put("registrations", getRegistrations());
+        body.put("loginUrl", urlResolver.getLoginUrl(request));
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getWriter().append(objectMapper.writeValueAsString(body));
+    }
+
+    private List<Config> getRegistrations() {
+        return properties.getRegistrations().values().stream()
+            .filter(Registration::isEnabled)
+            .map(this::build)
+            .collect(Collectors.toList());
     }
 
     private Config build(Registration registration) {
