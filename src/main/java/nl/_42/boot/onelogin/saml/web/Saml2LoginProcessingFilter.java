@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import nl._42.boot.onelogin.saml.Registration;
 import nl._42.boot.onelogin.saml.Saml2Properties;
 import nl._42.boot.onelogin.saml.user.Saml2AuthenticationProvider;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -63,6 +64,12 @@ public class Saml2LoginProcessingFilter extends AbstractSaml2Filter {
 
             log.info("Login '{}' successful", authentication.getName());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            if (registration.isDebug()) {
+                auth.getAttributes().forEach((name, values) ->
+                    log.debug("SAML Attribute '{}' = {}", name, StringUtils.join(values, ", "))
+                );
+            }
 
             successHandler.onAuthenticationSuccess(request, response, authentication);
         } catch (AuthenticationException exception) {
