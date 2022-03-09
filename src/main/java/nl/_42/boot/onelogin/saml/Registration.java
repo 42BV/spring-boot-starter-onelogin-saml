@@ -64,7 +64,7 @@ public class Registration {
     /**
      * Single Log Out binding
      */
-    private String logoutBinding = POST;
+    private String logoutBinding = REDIRECT;
 
     /**
      * IDP certificate

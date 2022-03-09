@@ -10,6 +10,7 @@ import nl._42.boot.onelogin.saml.web.Saml2Filter;
 import nl._42.boot.onelogin.saml.web.Saml2LoginFilter;
 import nl._42.boot.onelogin.saml.web.Saml2LoginProcessingFilter;
 import nl._42.boot.onelogin.saml.web.Saml2LogoutFilter;
+import nl._42.boot.onelogin.saml.web.Saml2LogoutHandler;
 import nl._42.boot.onelogin.saml.web.Saml2LogoutProcessingFilter;
 import nl._42.boot.onelogin.saml.web.Saml2MetadataDisplayFilter;
 import nl._42.boot.onelogin.saml.web.Saml2SuccessRedirectHandler;
@@ -61,9 +62,9 @@ public class Saml2OneLoginAutoConfiguration {
             Saml2Filter chain = new Saml2Filter();
             chain.on(CONFIG_URL, new Saml2ConfigFilter(properties));
             chain.on(LOGIN_URL, new Saml2LoginFilter(properties));
-            chain.on(LOGOUT_URL, new Saml2LogoutFilter(properties));
+            chain.on(LOGOUT_URL, new Saml2LogoutFilter(properties, oneLoginSaml2LogoutHandler()));
             chain.on(SSO_URL, saml2LoginProcessingFilter());
-            chain.on(SLO_URL, new Saml2LogoutProcessingFilter(properties));
+            chain.on(SLO_URL, new Saml2LogoutProcessingFilter(properties, oneLoginSaml2LogoutHandler()));
             chain.on(METADATA_URL, new Saml2MetadataDisplayFilter(properties));
             return chain;
         }
@@ -98,6 +99,11 @@ public class Saml2OneLoginAutoConfiguration {
         @Bean
         public Saml2FailureHandler oneLoginSaml2FailureHandler() {
             return new Saml2FailureHandler(properties);
+        }
+
+        @Bean
+        public Saml2LogoutHandler oneLoginSaml2LogoutHandler() {
+            return new Saml2LogoutHandler();
         }
 
     }

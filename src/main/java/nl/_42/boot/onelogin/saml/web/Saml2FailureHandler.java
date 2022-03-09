@@ -6,7 +6,6 @@ package nl._42.boot.onelogin.saml.web;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl._42.boot.onelogin.saml.Saml2Properties;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
@@ -24,12 +23,7 @@ public class Saml2FailureHandler implements AuthenticationFailureHandler {
      */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) {
-        redirectTo(response, properties.getFailureUrl());
-    }
-    
-    private void redirectTo(HttpServletResponse response, String location) {
-        response.setHeader("Location", location);
-        response.setStatus(HttpStatus.SEE_OTHER.value());
+        Redirects.redirectTo(response, properties.getFailureUrl());
     }
 
 }
