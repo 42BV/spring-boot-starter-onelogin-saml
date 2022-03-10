@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import nl._42.boot.onelogin.saml.Saml2Properties;
 import nl._42.boot.onelogin.saml.user.ExpiringAuthenticationToken;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
@@ -47,7 +46,7 @@ public class Saml2SuccessRedirectHandler implements AuthenticationSuccessHandler
         session.setMaxInactiveInterval(getSecondsToExpiration(authentication));
 
         String successUrl = getSuccessUrl(session);
-        redirectTo(response, successUrl);
+        Redirects.redirectTo(response, successUrl);
     }
 
     private String getSuccessUrl(HttpSession session) {
@@ -57,11 +56,6 @@ public class Saml2SuccessRedirectHandler implements AuthenticationSuccessHandler
         }
 
         return successUrl;
-    }
-
-    private void redirectTo(HttpServletResponse response, String location) {
-        response.setHeader("Location", location);
-        response.setStatus(HttpStatus.SEE_OTHER.value());
     }
 
     private int getSecondsToExpiration(Authentication authentication) {
