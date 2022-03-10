@@ -6,7 +6,7 @@
 
     <groupId>nl.42</groupId>
     <artifactId>spring-boot-starter-onelogin-saml</artifactId>
-    <version>0.7.1</version>
+    <version>0.7.2-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
