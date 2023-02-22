@@ -21,6 +21,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 import java.util.Optional;
 
@@ -55,6 +57,10 @@ public class Saml2OneLoginAutoConfiguration {
         @Autowired
         private Optional<RememberMeServices> rememberMeServices;
 
+        @Lazy
+        @Autowired
+        private Optional<SecurityContextRepository> securityContextRepository;
+
         // Web filters
 
         @Bean
@@ -73,9 +79,14 @@ public class Saml2OneLoginAutoConfiguration {
             return new Saml2LoginProcessingFilter(
                 properties,
                 oneLoginSaml2AuthenticationProvider(),
+                getSecurityContextRepository(),
                 oneLoginSaml2SuccessRedirectHandler(),
                 oneLoginSaml2FailureHandler()
             );
+        }
+
+        private SecurityContextRepository getSecurityContextRepository() {
+            return securityContextRepository.orElseGet(RequestAttributeSecurityContextRepository::new);
         }
 
         @Bean
@@ -103,7 +114,7 @@ public class Saml2OneLoginAutoConfiguration {
 
         @Bean
         public Saml2LogoutHandler oneLoginSaml2LogoutHandler() {
-            return new Saml2LogoutHandler();
+            return new Saml2LogoutHandler(getSecurityContextRepository());
         }
 
     }

@@ -3,6 +3,10 @@ package nl._42.boot.onelogin.saml.web;
 import com.onelogin.saml2.Auth;
 import com.onelogin.saml2.exception.SAMLException;
 import com.onelogin.saml2.settings.Saml2Settings;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import nl._42.boot.onelogin.saml.Registration;
 import nl._42.boot.onelogin.saml.Saml2Properties;
@@ -11,39 +15,40 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.context.SecurityContextRepository;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
 public class Saml2LoginProcessingFilter extends AbstractSaml2Filter {
 
     private final Saml2AuthenticationProvider authenticationProvider;
+    private final SecurityContextRepository securityContextRepository;
     private final AuthenticationSuccessHandler successHandler;
     private final AuthenticationFailureHandler failureHandler;
 
     public Saml2LoginProcessingFilter(
         Saml2Properties properties,
         Saml2AuthenticationProvider authenticationProvider,
+        SecurityContextRepository securityContextRepository,
         AuthenticationSuccessHandler successHandler,
         AuthenticationFailureHandler failureHandler
     ) {
         super(properties);
 
         this.authenticationProvider = authenticationProvider;
+        this.securityContextRepository = securityContextRepository;
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
     }
 
     @Override
     protected void doFilter(Saml2Settings settings, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException, SAMLException {
-        Auth auth = new Auth(settings, request, response);
+        Auth auth = getAuth(settings, request, response);
 
         try {
             auth.processResponse();
@@ -58,12 +63,16 @@ public class Saml2LoginProcessingFilter extends AbstractSaml2Filter {
         }
     }
 
+
+
     private void onAuthenticated(Auth auth, Registration registration, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
             Authentication authentication = authenticationProvider.authenticate(auth, registration);
 
             log.info("Login '{}' successful", authentication.getName());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContext context = SecurityContextHolder.getContext();
+            context.setAuthentication(authentication);
+            securityContextRepository.saveContext(context, request, response);
 
             if (registration.isDebug()) {
                 auth.getAttributes().forEach((name, values) ->

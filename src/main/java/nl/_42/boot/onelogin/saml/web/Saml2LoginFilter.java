@@ -4,15 +4,15 @@ import com.onelogin.saml2.Auth;
 import com.onelogin.saml2.authn.AuthnRequestParams;
 import com.onelogin.saml2.exception.SettingsException;
 import com.onelogin.saml2.settings.Saml2Settings;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import nl._42.boot.onelogin.saml.Registration;
 import nl._42.boot.onelogin.saml.Saml2Properties;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static nl._42.boot.onelogin.saml.web.Saml2SuccessRedirectHandler.SUCCESS_URL_PARAMETER;
@@ -29,7 +29,7 @@ public class Saml2LoginFilter extends AbstractSaml2Filter {
 
     @Override
     protected void doFilter(Saml2Settings settings, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, SettingsException {
-        Auth auth = new Auth(settings, request, response);
+        Auth auth = getAuth(settings, request, response);
 
         String successUrl = request.getParameter(SUCCESS_URL_PARAMETER);
         if (StringUtils.isNotBlank(successUrl)) {
