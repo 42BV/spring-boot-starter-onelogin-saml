@@ -1,16 +1,16 @@
 package nl._42.boot.onelogin.saml.web;
 
+import jakarta.servlet.ServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import nl._42.boot.onelogin.saml.Saml2Properties;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.ServletRequest;
 import java.net.URI;
 import java.util.Objects;
 
@@ -56,7 +56,7 @@ class Saml2LoginUrlResolver {
     private String getLocation(String url) {
         ResponseEntity<String> entity = template.getForEntity(url, String.class);
 
-        HttpStatus status = entity.getStatusCode();
+        HttpStatusCode status = entity.getStatusCode();
         URI location = entity.getHeaders().getLocation();
 
         if (location != null) {

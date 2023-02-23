@@ -3,7 +3,6 @@ onelogin:
     enabled: true
     base_url: https://myservice
     default_login_url: https://myservice/saml2/login/saml-service
-    default_login_skip_redirect: true
     registrations:
       saml-service:
         service_provider_id: https://myservice/saml2/login/saml-service

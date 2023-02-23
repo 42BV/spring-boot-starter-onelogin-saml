@@ -1,20 +1,24 @@
 package nl._42.boot.onelogin.saml.web;
 
+import com.onelogin.saml2.Auth;
 import com.onelogin.saml2.exception.SAMLException;
+import com.onelogin.saml2.exception.SettingsException;
 import com.onelogin.saml2.settings.Saml2Settings;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl._42.boot.onelogin.saml.Registration;
 import nl._42.boot.onelogin.saml.Saml2Properties;
+import nl._42.boot.onelogin.saml.web.javax.JavaxRequestAdapter;
+import nl._42.boot.onelogin.saml.web.javax.JavaxResponseAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.cert.CertificateException;
 
@@ -44,6 +48,10 @@ public abstract class AbstractSaml2Filter extends GenericFilterBean {
         String uri = request.getRequestURI();
         String registrationId = StringUtils.substringAfterLast(uri, "/");
         return properties.getRegistration(registrationId);
+    }
+
+    protected Auth getAuth(Saml2Settings settings, HttpServletRequest request, HttpServletResponse response) throws SettingsException {
+        return new Auth(settings, new JavaxRequestAdapter(request), new JavaxResponseAdapter(response));
     }
 
     protected abstract void doFilter(Saml2Settings settings, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain)
