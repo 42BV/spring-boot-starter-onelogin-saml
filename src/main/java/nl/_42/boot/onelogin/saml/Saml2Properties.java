@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -26,6 +27,7 @@ import java.util.Properties;
  */
 @Data
 @Slf4j
+@RefreshScope
 @ConfigurationProperties(prefix = "onelogin.saml")
 public class Saml2Properties implements InitializingBean {
 
