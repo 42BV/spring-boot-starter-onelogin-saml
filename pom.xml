@@ -11,7 +11,7 @@
 
     <groupId>nl.42</groupId>
     <artifactId>spring-boot-starter-onelogin-saml</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
 
     <name>Spring Boot Starter SAML</name>
     <description>Spring Boot Security integration for SAML.</description>
@@ -37,7 +37,7 @@
         <connection>scm:git:git@github.com:42BV/spring-boot-starter-onelogin-saml.git</connection>
         <developerConnection>scm:git:git@github.com:42BV/spring-boot-starter-onelogin-saml.git</developerConnection>
         <url>https://github.com/42BV/spring-boot-starter-onelogin-saml</url>
-        <tag>1.1.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
