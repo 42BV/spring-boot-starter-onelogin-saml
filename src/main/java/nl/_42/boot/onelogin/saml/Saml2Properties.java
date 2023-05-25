@@ -137,7 +137,22 @@ public class Saml2Properties implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        registrations.forEach((id, registration) -> registration.setId(id));
+        registrations.forEach((id, registration) ->
+            configure(registration, id)
+        );
+    }
+
+    private void configure(Registration registration, String id) {
+        registration.setId(id);
+
+        if (StringUtils.isBlank(registration.getServiceProviderId())) {
+            registration.setServiceProviderId(getLoginUrl(baseUrl, id));
+        }
+    }
+
+    private static String getLoginUrl(String baseUrl, String id) {
+        String basePath = StringUtils.removeEnd(baseUrl, "/");
+        return String.format("%s/saml2/login/%s", basePath, id);
     }
 
 }
