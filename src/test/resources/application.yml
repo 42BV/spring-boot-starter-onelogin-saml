@@ -5,7 +5,6 @@ onelogin:
     default_login_url: https://myservice/saml2/login/saml-service
     registrations:
       saml-service:
-        service_provider_id: https://myservice/saml2/login/saml-service
         service_provider_certificate: '${onelogin.saml.registrations.saml-service.certificate}'
         identity_provider_id: https://saml-service/sso
         sign_on_url: https://saml-service/sso
