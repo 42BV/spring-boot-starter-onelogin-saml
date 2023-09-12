@@ -27,6 +27,11 @@ public class Registration {
     private String id;
 
     /**
+     * Registration label
+     */
+    private String label;
+
+    /**
      * Service Provider (SP) identifier
      */
     private String serviceProviderId;
