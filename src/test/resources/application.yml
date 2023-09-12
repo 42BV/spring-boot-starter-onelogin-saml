@@ -45,3 +45,8 @@ onelogin:
         support:
           given_name: Support Guy
           email_address: support@example.com
+
+spring:
+  cloud:
+    config:
+      enabled: false
