@@ -74,6 +74,7 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>com.onelogin</groupId>
             <artifactId>java-saml</artifactId>
@@ -90,6 +91,7 @@
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
