@@ -1,6 +1,7 @@
 package nl._42.boot.onelogin.saml;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
@@ -22,7 +23,9 @@ public class Saml2RefreshEventListener {
     @EventListener
     public void handleContextRefresh(org.springframework.cloud.endpoint.event.RefreshEvent event) {
         log.info("Refreshing SAML2 properties after event '{}'...", event.getEvent());
-        applicationContext.getAutowireCapableBeanFactory().autowireBean(properties);
+        AutowireCapableBeanFactory beanFactory = applicationContext.getAutowireCapableBeanFactory();
+        Saml2Properties refreshed = beanFactory.createBean(Saml2Properties.class);
+        properties.refresh(refreshed);
     }
 
 }
