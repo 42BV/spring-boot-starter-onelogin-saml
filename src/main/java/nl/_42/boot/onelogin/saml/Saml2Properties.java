@@ -155,4 +155,23 @@ public class Saml2Properties implements InitializingBean {
         return String.format("%s/saml2/login/%s", basePath, id);
     }
 
+    /**
+     * Refresh properties after context change, done programmatically
+     * because not every library user has cloud libraries available.
+     * @param properties the refreshed properties
+     */
+    public void refresh(Saml2Properties properties) {
+        this.enabled = properties.isEnabled();
+        this.baseUrl = properties.getBaseUrl();
+        this.defaultLoginUrl = properties.getDefaultLoginUrl();
+        this.defaultLoginSkipRedirect = properties.isDefaultLoginSkipRedirect();
+        this.successUrl = properties.getSuccessUrl();
+        this.failureUrl = properties.getFailureUrl();
+        this.sessionTimeout = properties.getSessionTimeout();
+        this.properties = new Properties(properties.getProperties());
+        this.registrations = new HashMap<>(properties.getRegistrations());
+
+        afterPropertiesSet();
+    }
+
 }
