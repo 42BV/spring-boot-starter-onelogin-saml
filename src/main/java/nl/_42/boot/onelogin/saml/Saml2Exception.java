@@ -8,4 +8,8 @@ public class Saml2Exception extends AuthenticationException {
         super(message);
     }
 
+    public Saml2Exception(String message, Exception cause) {
+        super(message, cause);
+    }
+
 }

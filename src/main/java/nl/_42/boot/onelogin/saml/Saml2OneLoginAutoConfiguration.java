@@ -13,13 +13,14 @@ import nl._42.boot.onelogin.saml.web.Saml2LogoutFilter;
 import nl._42.boot.onelogin.saml.web.Saml2LogoutHandler;
 import nl._42.boot.onelogin.saml.web.Saml2LogoutProcessingFilter;
 import nl._42.boot.onelogin.saml.web.Saml2MetadataDisplayFilter;
-import nl._42.boot.onelogin.saml.web.Saml2SuccessRedirectHandler;
+import nl._42.boot.onelogin.saml.web.Saml2SuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
@@ -61,6 +62,10 @@ public class Saml2OneLoginAutoConfiguration {
         @Autowired
         private Optional<SecurityContextRepository> securityContextRepository;
 
+        @Lazy
+        @Autowired
+        private Optional<AuthenticationFailureHandler> failureHandler;
+
         // Web filters
 
         @Bean
@@ -79,9 +84,9 @@ public class Saml2OneLoginAutoConfiguration {
             return new Saml2LoginProcessingFilter(
                 properties,
                 oneLoginSaml2AuthenticationProvider(),
-                getSecurityContextRepository(),
-                oneLoginSaml2SuccessRedirectHandler(),
-                oneLoginSaml2FailureHandler()
+                oneLoginSaml2SuccessHandler(),
+                oneLoginSaml2FailureHandler(),
+                getSecurityContextRepository()
             );
         }
 
@@ -100,8 +105,8 @@ public class Saml2OneLoginAutoConfiguration {
         }
 
         @Bean
-        public Saml2SuccessRedirectHandler oneLoginSaml2SuccessRedirectHandler() {
-            return new Saml2SuccessRedirectHandler(
+        public Saml2SuccessHandler oneLoginSaml2SuccessHandler() {
+            return new Saml2SuccessHandler(
                 rememberMeServices.orElse(null),
                 properties
             );
@@ -109,7 +114,10 @@ public class Saml2OneLoginAutoConfiguration {
 
         @Bean
         public Saml2FailureHandler oneLoginSaml2FailureHandler() {
-            return new Saml2FailureHandler(properties);
+            return new Saml2FailureHandler(
+                failureHandler.orElse(null),
+                properties
+            );
         }
 
         @Bean

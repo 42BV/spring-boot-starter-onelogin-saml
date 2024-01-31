@@ -9,16 +9,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import nl._42.boot.onelogin.saml.Registration;
+import nl._42.boot.onelogin.saml.Saml2Exception;
 import nl._42.boot.onelogin.saml.Saml2Properties;
 import nl._42.boot.onelogin.saml.user.Saml2AuthenticationProvider;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.context.SecurityContextRepository;
 
 import java.io.IOException;
@@ -27,43 +25,41 @@ import java.io.IOException;
 public class Saml2LoginProcessingFilter extends AbstractSaml2Filter {
 
     private final Saml2AuthenticationProvider authenticationProvider;
+    private final Saml2SuccessHandler successHandler;
+    private final Saml2FailureHandler failureHandler;
+
     private final SecurityContextRepository securityContextRepository;
-    private final AuthenticationSuccessHandler successHandler;
-    private final AuthenticationFailureHandler failureHandler;
 
     public Saml2LoginProcessingFilter(
         Saml2Properties properties,
         Saml2AuthenticationProvider authenticationProvider,
-        SecurityContextRepository securityContextRepository,
-        AuthenticationSuccessHandler successHandler,
-        AuthenticationFailureHandler failureHandler
+        Saml2SuccessHandler successHandler,
+        Saml2FailureHandler failureHandler,
+        SecurityContextRepository securityContextRepository
     ) {
         super(properties);
 
         this.authenticationProvider = authenticationProvider;
-        this.securityContextRepository = securityContextRepository;
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
+        this.securityContextRepository = securityContextRepository;
     }
 
     @Override
     protected void doFilter(Saml2Settings settings, Registration registration, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException, SAMLException {
-        Auth auth = getAuth(settings, request, response);
-
         try {
+            Auth auth = getAuth(settings, request, response);
             auth.processResponse();
-        } catch (Exception e) {
-            throw new SAMLException("Could not process response", e);
-        }
 
-        if (auth.isAuthenticated()) {
-            onAuthenticated(auth, registration, request, response);
-        } else {
-            onFailure(auth, request, response);
+            if (auth.isAuthenticated()) {
+                onAuthenticated(auth, registration, request, response);
+            } else {
+                onFailure(auth, request, response);
+            }
+        } catch (Exception cause) {
+            failureHandler.onFailure(request, response, new Saml2Exception("Could not process SAML2 response", cause));
         }
     }
-
-
 
     private void onAuthenticated(Auth auth, Registration registration, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
@@ -80,16 +76,15 @@ public class Saml2LoginProcessingFilter extends AbstractSaml2Filter {
                 );
             }
 
-            successHandler.onAuthenticationSuccess(request, response, authentication);
+            successHandler.onSuccess(request, response, authentication);
         } catch (AuthenticationException exception) {
-            log.error("An error has occurred during authentication", exception);
-            failureHandler.onAuthenticationFailure(request, response, exception);
+            failureHandler.onFailure(request, response, exception);
         }
     }
 
     private void onFailure(Auth auth, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String message = String.format("Could not authenticate: (%s) %s", auth.getLastErrorReason(), String.join(", ", auth.getErrors()));
-        failureHandler.onAuthenticationFailure(request, response, new AuthenticationServiceException(message));
+        failureHandler.onFailure(request, response, new Saml2Exception(message));
     }
 
 }
