@@ -9,7 +9,6 @@ import nl._42.boot.onelogin.saml.Saml2Properties;
 import nl._42.boot.onelogin.saml.user.ExpiringAuthenticationToken;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,18 +25,14 @@ import java.time.ZoneOffset;
  */
 @Slf4j
 @AllArgsConstructor
-public class Saml2SuccessRedirectHandler implements AuthenticationSuccessHandler {
+public class Saml2SuccessHandler {
 
     public static final String SUCCESS_URL_PARAMETER = "successUrl";
 
     private final RememberMeServices rememberMeServices;
     private final Saml2Properties properties;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+    public void onSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         if (rememberMeServices != null) {
             rememberMeServices.loginSuccess(request, response, authentication);
         }

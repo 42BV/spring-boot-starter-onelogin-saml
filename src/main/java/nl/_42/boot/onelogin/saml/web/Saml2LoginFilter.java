@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 
-import static nl._42.boot.onelogin.saml.web.Saml2SuccessRedirectHandler.SUCCESS_URL_PARAMETER;
+import static nl._42.boot.onelogin.saml.web.Saml2SuccessHandler.SUCCESS_URL_PARAMETER;
 
 @Slf4j
 public class Saml2LoginFilter extends AbstractSaml2Filter {
