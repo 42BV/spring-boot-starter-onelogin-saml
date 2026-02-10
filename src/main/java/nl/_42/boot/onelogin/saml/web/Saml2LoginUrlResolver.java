@@ -112,7 +112,7 @@ class Saml2LoginUrlResolver {
         }
 
         @Override
-        public void handleError(ClientHttpResponse response) {
+        public void handleError(URI url, org.springframework.http.HttpMethod method, ClientHttpResponse response) {
         }
 
     }

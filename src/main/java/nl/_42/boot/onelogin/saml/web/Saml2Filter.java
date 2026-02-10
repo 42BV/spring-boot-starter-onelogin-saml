@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 
 import jakarta.servlet.Filter;
@@ -25,7 +25,8 @@ public class Saml2Filter extends GenericFilterBean {
     private final List<SecurityFilterChain> filters = new ArrayList<>();
 
     public void on(String url, Filter filter) {
-        AntPathRequestMatcher matcher = new AntPathRequestMatcher(url + WILDCARD);
+        String pattern = url.endsWith(WILDCARD) ? url : url + WILDCARD;
+        PathPatternRequestMatcher matcher = PathPatternRequestMatcher.pathPattern(pattern);
         filters.add(new DefaultSecurityFilterChain(matcher, filter));
     }
 
