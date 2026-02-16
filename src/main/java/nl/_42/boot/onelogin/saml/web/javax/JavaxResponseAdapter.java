@@ -140,4 +140,23 @@ public class JavaxResponseAdapter implements javax.servlet.http.HttpServletRespo
         return null;
     }
 
+    @Override public int getStatus() {
+        return response.getStatus();
+    }
+
+    @Override public String getHeader(String name) {
+        return response.getHeader(name);
+    }
+
+    @Override public java.util.Collection<String> getHeaders(String name) {
+        return response.getHeaders(name);
+    }
+
+    @Override public java.util.Collection<String> getHeaderNames() {
+        return response.getHeaderNames();
+    }
+
+    @Override public void setContentLengthLong(long len) {
+    }
+
 }

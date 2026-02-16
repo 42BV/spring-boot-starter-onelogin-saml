@@ -235,4 +235,62 @@ public class JavaxRequestAdapter implements javax.servlet.http.HttpServletReques
         return request.getLocalPort();
     }
 
+    @Override public boolean authenticate(javax.servlet.http.HttpServletResponse response) {
+        return false;
+    }
+
+    @Override public void login(String username, String password) {
+    }
+
+    @Override public void logout() {
+    }
+
+    @Override public java.util.Collection<javax.servlet.http.Part> getParts() {
+        return java.util.Collections.emptyList();
+    }
+
+    @Override public javax.servlet.http.Part getPart(String name) {
+        return null;
+    }
+
+    @Override public <T extends javax.servlet.http.HttpUpgradeHandler> T upgrade(Class<T> handlerClass) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override public String changeSessionId() {
+        return request.changeSessionId();
+    }
+
+    @Override public long getContentLengthLong() {
+        return request.getContentLengthLong();
+    }
+
+    @Override public javax.servlet.DispatcherType getDispatcherType() {
+        return null;
+    }
+
+    @Override public javax.servlet.ServletContext getServletContext() {
+        return null;
+    }
+
+    @Override public javax.servlet.AsyncContext startAsync() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override public javax.servlet.AsyncContext startAsync(javax.servlet.ServletRequest req, javax.servlet.ServletResponse res) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override public boolean isAsyncStarted() {
+        return false;
+    }
+
+    @Override public boolean isAsyncSupported() {
+        return false;
+    }
+
+    @Override public javax.servlet.AsyncContext getAsyncContext() {
+        throw new UnsupportedOperationException();
+    }
+
 }
