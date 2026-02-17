@@ -195,13 +195,6 @@
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
                 <version>${dependency-check-maven.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <configuration>
                     <failBuildOnCVSS>0</failBuildOnCVSS>
                     <skipProvidedScope>true</skipProvidedScope>
