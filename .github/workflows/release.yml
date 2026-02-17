@@ -23,10 +23,10 @@ on:
 
 jobs:
   call-workflow:
-  uses: 42BV/42-github-workflows/.github/workflows/maven-release.yml@master
-  secrets: inherit # You may want to specify the exact secrets to use. This will work, though.
-  with:
-    # Passes the values to the template. The workflow is capable of handling empty values.
-    release-version: ${{ github.event.inputs.release-version }}
-    next-version: ${{ github.event.inputs.next-version }}
-    java-version: ${{ github.event.inputs.java-version }}
+    uses: 42BV/42-github-workflows/.github/workflows/maven-release.yml@master
+    secrets: inherit # You may want to specify the exact secrets to use. This will work, though.
+    with:
+      # Passes the values to the template. The workflow is capable of handling empty values.
+      release-version: ${{ github.event.inputs.release-version }}
+      next-version: ${{ github.event.inputs.next-version }}
+      java-version: ${{ github.event.inputs.java-version }}

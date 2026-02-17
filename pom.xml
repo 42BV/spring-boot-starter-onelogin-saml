@@ -47,6 +47,7 @@
         <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
         <dependency-check-maven.version>12.2.0</dependency-check-maven.version>
         <java-saml.version>2.9.0</java-saml.version>
+        <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
         <lombok.version>1.18.42</lombok.version>
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
@@ -55,7 +56,7 @@
         <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <spring-boot.version>4.0.1</spring-boot.version>
-        <spring.cloud.version>2025.1.0</spring.cloud.version>
+        <spring-cloud.version>2025.1.1</spring-cloud.version>
     </properties>
 
     <dependencyManagement>
@@ -70,7 +71,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring.cloud.version}</version>
+                <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
           </dependency>    
@@ -202,13 +203,32 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
+                    <failBuildOnCVSS>0</failBuildOnCVSS>
                     <skipProvidedScope>true</skipProvidedScope>
                     <skipTestScope>true</skipTestScope>
                     <skipRuntimeScope>true</skipRuntimeScope>
                     <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
                     <suppressionFile>owasp-suppressions.xml</suppressionFile>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                      </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
